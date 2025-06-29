@@ -1,12 +1,16 @@
-import fs from 'fs/promises';
 import matter from 'gray-matter';
 
-import path from 'path';
-
-const file = path.resolve(__dirname, '..', 'task_board.md');
+/**
+ * Fetches and parses the task_board.md file that sits next to the
+ * frontend assets. The file is served as a static asset so it can be
+ * accessed via HTTP.
+ */
 
 export async function readBoard() {
-  const content = await fs.readFile(file, 'utf8');
+  // The markdown file is served from the root of the dev server so we can
+  // simply request it via fetch.
+  const res = await fetch('/task_board.md');
+  const content = await res.text();
   const sections = content.split(/^## /m).slice(1);
   const tasks: any[] = [];
   for (const section of sections) {
